@@ -1,38 +1,7 @@
-import React, { useState } from 'react'
-// import { useAuth } from '../../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import { usePostSignupMutation } from '../../api/api'
+import useSignup from "../../hooks/useSignup"
 
 const Signup = () => {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-        roles: ""
-    })
-    const [signup, { isLoading, isError }] = usePostSignupMutation()
-    const navigate = useNavigate()
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData, [name]: value
-        })
-    }
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await signup(formData).unwrap();
-            setFormData({
-                name: "",
-                email: "",
-                password: "",
-                roles: ""
-            })
-            navigate("/")
-        } catch (error) {
-
-        }
-    }
+    const {formData, handleChange, handleSubmit, isError, isLoading} = useSignup()
     return (
         <div>
             <h3>Signup</h3>
