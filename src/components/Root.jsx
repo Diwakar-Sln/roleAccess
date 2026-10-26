@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom'
 
 const Root = () => {
   const navigate = useNavigate();
   useEffect(() => {
+    const user = useSelector((state)=>state.auth.user)
 
-    const storedUser = localStorage.getItem("auth-user")
-
-    if (!storedUser) {
+    if (!user) {
       return <Navigate to="/" replace />
     }
-
-    const user = JSON.parse(storedUser)
 
     if (user) {
       if (user.role === "admin") {
