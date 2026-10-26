@@ -1,84 +1,79 @@
 import React, { useState } from 'react'
 // import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { signupUser } from '../../features/authSlice'
-import { useDispatch } from 'react-redux'
+import { usePostSignupMutation } from '../../api/api'
 
 const Signup = () => {
     const [formData, setFormData] = useState({
-        email:"",
-        password:"",
-        cpassword:""
+        name: "",
+        email: "",
+        password: "",
+        roles: ""
     })
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(false)
-    // const {signUp} = useAuth()
-    const dispatch = useDispatch();
+    const [signup, { isLoading, isError }] = usePostSignupMutation()
     const navigate = useNavigate()
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData({
             ...formData, [name]: value
         })
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true)
-        setError(null)
         try {
-            await dispatch(signupUser(formData)).unwrap()
+            await signup(formData).unwrap();
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                roles: ""
+            })
             navigate("/")
-        } catch (message) {
-            setError(message)
-        }finally {
-            setLoading(false)
+        } catch (error) {
+
         }
-        // const result = signUp(formData)
-        // if(!result.success){
-        //     setError(result.message)
-        //     setLoading(false)
-        //     return;
-        // }
-        // setFormData({
-        //     email:"",
-        //     password:"",
-        //     cpassword:""
-        // })
-        // setLoading(false)
-        // navigate("/")
     }
-  return (
-    <div>
-        <h3>Signup</h3>
-        {error && <span>{error}</span>}
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="email">Email </label>
-                <input type="text" placeholder='Enter your email' name='email'
-                value={formData.email}
-                onChange={handleChange} />
-            </div>
-            <div>
-                <label htmlFor="password">Password </label>
-                <input type="password" placeholder='Enter your password' name='password'
-                value={formData.password}
-                onChange={handleChange}  />
-            </div>
-            <div>
-                <label htmlFor="cpassword">Confirm Password </label>
-                <input type="password" placeholder='Confirm your password' name='cpassword'
-                value={formData.cpassword}
-                onChange={handleChange}  />
-            </div>
-            <div>
-                <button type='submit'>{loading ? "Loading..." : "Sign Up"}</button>
-            </div>
-            <div>
-                <p>Already have an account ? <a href="/">Login</a></p>
-            </div>
-        </form>
-    </div>
-  )
+    return (
+        <div>
+            <h3>Signup</h3>
+            {isError && <p>Error will posting data</p>}
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="name">Name </label>
+                    <input type="text" placeholder='Enter your name' name='name'
+                        value={formData.name}
+                        onChange={handleChange} />
+                </div>
+                <div>
+                    <label htmlFor="email">Email </label>
+                    <input type="text" placeholder='Enter your email' name='email'
+                        value={formData.email}
+                        onChange={handleChange} />
+                </div>
+                <div>
+                    <label htmlFor="password">Password </label>
+                    <input type="password" placeholder='Enter your password' name='password'
+                        value={formData.password}
+                        onChange={handleChange} />
+                </div>
+                <div>
+                    <label htmlFor="roles">Role</label>
+                    <select name="roles"
+                        value={formData.roles}
+                        onChange={handleChange}>
+                        <option value="">Select role</option>
+                        <option value="merchant">Merchant</option>
+                    </select>
+                </div>
+                <div>
+                    <button type='submit'>{isLoading ? "loading..." : "SignUp"}</button>
+                </div>
+                <div>
+                    <p>Already have an account ? <a href="/">Login</a></p>
+                </div>
+            </form>
+        </div>
+    )
 }
 
 export default Signup

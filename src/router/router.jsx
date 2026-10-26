@@ -33,7 +33,7 @@ const router = createBrowserRouter([
     {
         path: "/user",
         element:
-        <ProtectedRoute requiredRole="user">
+        <ProtectedRoute requiredRole="merchant">
             <MainLayout />
         </ProtectedRoute>,
         children: [

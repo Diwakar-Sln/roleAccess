@@ -1,20 +1,24 @@
 import React from 'react'
-// import { useAuth } from '../../context/AuthContext'
-import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { logout } from '../../features/authSlice';
 
 const Dashboard = () => {
-    // const {logout, user} = useAuth();
-    const user = useSelector((state)=>state.auth.user)
+    const navigate = useNavigate()
+    const user = useSelector((state) => state.auth.user)
     const dispatch = useDispatch();
-
+    const handleLogout = () => {
+        localStorage.removeItem("auth-user");
+        localStorage.removeItem("token");
+        dispatch(logout());
+        navigate("/")
+    }
   return (
     <div>
         <h3>Dashboard</h3>
-        <h4>Welcome {user.role}</h4>
+        <h4>Welcome {user?.name} {user?.role}</h4>
         <div>
-            <button onClick={()=>dispatch(logout())}>Logout</button>
+            <button onClick={handleLogout}>Logout</button>
         </div>
         <div>
             <Outlet/>

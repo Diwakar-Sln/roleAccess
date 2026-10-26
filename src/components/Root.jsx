@@ -1,17 +1,24 @@
 import React, { useEffect } from 'react'
-// import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 const Root = () => {
-  // const {user} = useAuth()
-  const user = useSelector((state)=>state.auth.user)
   const navigate = useNavigate();
-  useEffect(()=>{
-    if(user){
-      if(user.role === "admin"){
-        navigate("/dashboard")
-      }else{
+  useEffect(() => {
+
+    const storedUser = localStorage.getItem("auth-user")
+
+    if (!storedUser) {
+      return <Navigate to="/" replace />
+    }
+
+    const user = JSON.parse(storedUser)
+
+    if (user) {
+      if (user.role === "admin") {
+        navigate("/admin")
+      } else if (user.role === "merchant") {
+        navigate("/user")
+      } else {
         navigate("/")
       }
     }
